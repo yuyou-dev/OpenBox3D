@@ -10,6 +10,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "test": "node --test",
     "prebuild": "npm run check:template-sync",
     "build": "vite build",
     "build:pages": "npm run check:template-sync && vite build --base=/OpenBox3D/",
