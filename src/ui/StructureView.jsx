@@ -37,7 +37,14 @@ export function StructureView() {
     { k: '含出血', v: fmt(sw + 2 * s.bleed) + ' × ' + fmt(sh + 2 * s.bleed) },
     { k: '纸厚 t', v: t + ' mm' }
   ].concat(specTpl[s.tpl] || []);
-  const checks = ['外轮廓闭合', '无自交 / 孤立线段', '最小刀距 ≥ 1.5 mm', '压痕两侧均有连接面', '出血 ≥ ' + m.bleed + ' mm（' + m.note + '）'];
+  const bleedOk = s.bleed >= m.bleed;
+  const checks = [
+    { label: '外轮廓闭合：未自动检测', dot: '#9a8f7e' },
+    { label: '自交 / 孤立线段：未自动检测', dot: '#9a8f7e' },
+    { label: '最小刀距 ≥ 1.5 mm：未自动检测', dot: '#9a8f7e' },
+    { label: '压痕两侧均有连接面：未自动检测', dot: '#9a8f7e' },
+    { label: '出血 ' + s.bleed + ' mm ' + (bleedOk ? '≥' : '<') + ' 材质建议 ' + m.bleed + ' mm（' + m.note + '）', dot: bleedOk ? '#3f9e5f' : '#d05a2a' }
+  ];
   const compNote = s.tpl === 'rte' || s.tpl === 'ste' ? '当前：W+t · L+t · W+t · L+2t，高度 H+t' : s.tpl === 'mailer' ? '当前：楞厚 t=' + t + '，侧墙 H+t，盖宽 W+3t' : s.tpl === 'cyl' ? '当前：直径 D=L，筒身 24 段卷合，盖为 24 边形' : s.tpl === 'hex' ? '当前：边长 W，六棱筒，盖为正六边形' : '当前：盖/套筒按 +1mm/边 放量';
   const editOn = s.editMode;
   const typeOvrCount = Object.keys(s.typeOvr).length;
@@ -123,8 +130,8 @@ export function StructureView() {
       <div style={{ padding: 14 }}>
         <ST>校验</ST>
         {checks.map(c => (
-          <div key={c} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '4px 0', fontSize: 12, color: '#3d3830' }}>
-            <div style={{ width: 6, height: 6, borderRadius: 99, background: '#3f9e5f', flex: 'none' }} />{c}
+          <div key={c.label} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '4px 0', fontSize: 12, color: '#3d3830' }}>
+            <div style={{ width: 6, height: 6, borderRadius: 99, background: c.dot, flex: 'none' }} />{c.label}
           </div>
         ))}
       </div>
