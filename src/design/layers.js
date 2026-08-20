@@ -19,8 +19,15 @@ export function bboxOf(l) {
 }
 
 export function dpiOf(l) {
-  if (l.kind !== 'image' || !l.pxw) return 0;
-  return Math.round(l.pxw / (l.w / 25.4));
+  if (l.kind !== 'image') return 0;
+  const pxw = Number(l.pxw || l.imgW), pxh = Number(l.imgH);
+  const w = Number(l.w), h = Number(l.h);
+  const crop = Array.isArray(l.crop) ? l.crop : [0, 0, 1, 1];
+  const cropW = Number(crop[2]), cropH = Number(crop[3]);
+  if (![pxw, pxh, w, h, cropW, cropH].every(v => Number.isFinite(v) && v > 0)) return 0;
+  const dpiX = pxw * cropW / (w / 25.4);
+  const dpiY = pxh * cropH / (h / 25.4);
+  return Math.round(Math.min(dpiX, dpiY));
 }
 
 // 图集 UV 用：每个面板（fill 多边形）的包围盒，供 3D 与导出对齐
